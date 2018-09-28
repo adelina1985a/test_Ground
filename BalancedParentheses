@@ -1,0 +1,75 @@
+package test_Ground;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+/*
+ * balanced parentheses with emoticons problem
+ */
+public class BalancedParentheses {
+  /**
+   * Iterate through each line of input.
+   */
+  public static void main(String[] args) throws IOException {
+    InputStreamReader reader = new InputStreamReader(System.in, StandardCharsets.UTF_8);
+    BufferedReader in = new BufferedReader(reader);
+    String line;
+    while ((line = in.readLine()) != null) {
+      if (isBalanced(line)) {
+        System.out.println("YES");
+      } else
+        System.out.println("NO");
+    }
+  }
+
+  public static boolean isBalanced(String s) {
+    //Check for non-allowed characters
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c < 'a' || c > 'z') {
+        if (c != ':' && c != ' ' && c != '(' && c != ')')
+          return false;
+      }
+    }
+    // replace sad emoticon with S
+    s = s.replace(":(", "S");
+    // replace happy emoticon with H
+    s = s.replace(":)", "H");
+    // Replace all allowed characters with empty string, except parentheses and S, H
+    s = s.replaceAll("[a-z :]", "");
+    // so we can focus on the main rule of BaLAncing
+    return isBla(s);
+  }
+
+  public static boolean isBla(String s) {
+    int open = 0;     // # of (
+    int closed = 0;   // # of )
+    int sad = 0;      // # of S
+    int happy = 0;    // # of H
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c == '(') {
+        open++;
+      } else if (c == ')') {
+        closed++;
+        // S or :( might count towards OPEN parentheses, so we add them to the current total
+        if (open + sad - closed < 0) {
+          // first time we encounter an extra closed ')' is enough to consider unbalanced
+          return false;
+        }
+      } else if (c == 'S') {
+        sad++;
+      } else if (c == 'H') {
+        happy++;
+      }
+    }
+    // H or :) might count towards CLOSED parentheses, so we add them to the current total
+    if (closed + happy - open < 0) {
+      // if there are extra open '(' after we finished reading the whole line, it's unbalanced
+      return false;
+    }
+    return true;
+  }
+}
