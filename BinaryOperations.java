@@ -13,6 +13,8 @@ public class BinaryOperations {
     int b = in.nextInt();
     //System.out.println(sum(a, b));
     System.out.println(mult(a, b));
+    // once finished
+    in.close();
   }
 
   public static String mult(int a, int b) {
